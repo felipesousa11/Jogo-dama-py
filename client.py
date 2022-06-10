@@ -12,7 +12,7 @@ def client(jogador, localizacao_cedula, linha_destino, coluna_destino, host = '1
     linha_destino = str(linha_destino)
     coluna_destino = str(coluna_destino)
     try: 
-        mensagem = jogador + '-' + linha_originaria + '-' +coluna_originaria + '-' + linha_destino + '-' + coluna_destino
+        mensagem = jogador + '' + linha_originaria + '' +coluna_originaria + '' + linha_destino + '' + coluna_destino
         sock.sendall(mensagem.encode('utf-8'))
         print(mensagem)
         amount_received = 0 

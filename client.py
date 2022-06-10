@@ -1,11 +1,30 @@
 
 import socket
+import time
+from threading import Thread
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
+server_address = ('127.0.0.1', 5000)
+dama = None
+
+def conectar(jogo):
+    global dama
+    dama = jogo
+    sock.connect(server_address) 
+    x = Thread(target = receber)
+    x.start()
+
+def receber():
+    while True:
+        time.sleep(5)
+        data = sock.recv(2048) 
+        if data:
+            dama.receberJogada(str(data.decode()))
+
+
 def client(jogador, localizacao_cedula, linha_destino, coluna_destino, host = '127.0.0.1', port=5000): 
     # Create a TCP/IP socket 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     # Connect the socket to the server 
-    server_address = (host, port)
-    sock.connect(server_address) 
     jogador = str(jogador)
     linha_originaria = str(localizacao_cedula[0])
     coluna_originaria = str(localizacao_cedula[1])
@@ -25,6 +44,3 @@ def client(jogador, localizacao_cedula, linha_destino, coluna_destino, host = '1
         print ("Socket error: %s" %str(e)) 
     except Exception as e: 
         print ("Other exception: %s" %str(e)) 
-    finally: 
-        print ("Closing connection to the server") 
-        sock.close() 

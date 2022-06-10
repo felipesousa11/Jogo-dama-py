@@ -3,12 +3,13 @@
 # lucas.medeiros.fernandes@ccc.ufcg.edu.br
 # Miniprojeto 1, Damas
 
-from client import client
+from client import client, conectar
 import pygame
 from pygame.locals import *
 import socket
 
 pygame.init()
+
 
 # VARIÁVEIS DE VALOR CONSTANTE
 
@@ -77,8 +78,9 @@ class Jogo:
 					self.cedula_selecionada = [linha, coluna]
 
 	# VERIFICANDO SE UM MOVIMENTO REALIZADO PELO JOGADOR É VÁLIDO
-	def is_movimento_valido(self, jogador, localizacao_cedula, linha_destino, coluna_destino):
-		client(jogador, localizacao_cedula, linha_destino, coluna_destino)
+	def is_movimento_valido(self, jogador, localizacao_cedula, linha_destino, coluna_destino, cliente = None):
+		if not cliente:
+			client(jogador, localizacao_cedula, linha_destino, coluna_destino)
 		linha_originaria = localizacao_cedula[0]
 		coluna_originaria = localizacao_cedula[1]
 
@@ -104,7 +106,6 @@ class Jogo:
 				return False, None
 
 			return True, None
-
 		return False, None
 		
 
@@ -365,6 +366,14 @@ class Jogo:
 				
 		return movimentos, pulos
 
+	def receberJogada(self, jogada):
+		jogada = jogada.split("-")
+		pos_original = []
+		pos_original.append(7 - int(jogada[1])) 
+		pos_original.append(int(jogada[2]))
+		movimento, pulo = self.movimentos_possiveis(pos_original)
+		self.jogar(jogada[0], pos_original, (7 - int(jogada[3])) , int(jogada[4]), pulo)
+		#self.is_movimento_valido('x', pos_original, (int(jogada[3])) , int(jogada[4]), True)
 
 	# EXECUTA UMA JOGADA
 	def jogar(self, jogador, localizacao_cedula, linha_destino, coluna_destino, pulo):
@@ -734,6 +743,7 @@ def loop_jogo():
 	sair = False
 
 	jogo = Jogo()
+	conectar(jogo)
 
 	while not sair:
 		for evento in pygame.event.get():
